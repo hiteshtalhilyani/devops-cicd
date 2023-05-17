@@ -1,0 +1,30 @@
+
+- Install Terminal also to get multiple sessions of Powershell 
+
+
+Run all the below commands on Powershell (Open Powershell as Admin)
+
+Install chocolatey from the instructions given in the link below.
+https://chocolatey.org/docs/installation
+
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+If we don't see any errors, we are ready to use Chocolatey! Type choco or choco -?
+
+
+choco install virtualbox --version=6.1.40
+choco install vagrant
+choco install git
+choco install jdk8
+choco install maven
+choco install awscli
+choco install intellijidea-community
+choco install sublimetext3.app
+
+# Reboot the Laptop after installing above softwares 
+
+
+# Create Accounts 
+1. Github
+2. AWS 
+3. Dockerhub
