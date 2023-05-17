@@ -1,0 +1,72 @@
+---
+- name: Bastion host setup 
+  hosts: localhost
+  connection: local
+  gather_facts: no 
+  tasks: 
+      - name: Import variable from vars
+        include_vars:  vars/vpc_setup
+
+      - name: Import VPC Output variables 
+        include_vars: vars/output_vars
+
+      - name: Create EC2 Key 
+        ec2_key:
+                name: bastion_keypair
+                region: ap-south-1
+        register: bastion_keyout
+      
+      - name: View Private key
+        debug: 
+          var: bastion_keyout
+
+      - name: Save private key  in ppk format
+        copy:
+                content: "{{bastion_keyout.key.private_key}}"
+                dest: "./bastion-key.pem"
+                mode: 0600
+        when: bastion_keyout.changed
+
+      - name: Create Security Group 
+        ec2_group:
+                name: "{{ bastion_sg }}"
+                description: bastion host SG
+                vpc_id: "{{vpcid}}"
+                region: "{{region}}"
+                rules:
+                - proto: tcp
+                  from_port: 22
+                  to_port: 22
+                  cidr_ip: "{{MYIP}}"
+                  rule_desc: allow port 22 from my Laptop
+        register: BastionSG_out
+
+      - name: Create Bastion Host in Public Subnet
+        ec2:
+          key_name: "bastion_keypair"
+          region: "{{region}}"
+          instance_type: t2.micro
+          image: "{{bastion_ami}}"
+          wait: yes
+          wait_timeout: 300
+          vpc_subnet_id: "{{pubsub1id}}"
+          instance_tags:
+            Name: "Bastion_Host"
+            Project: Webapp
+            Owner: Hitesh
+            Environment: Testing
+          exact_count: 1
+          count_tag: 
+            Name: "Bastion_Host"
+            Project: Webapp
+            Owner: Hitesh
+            Environment: Testing
+          group_id: "{{BastionSG_out.group_id}}"
+        register: bastionhost_out
+
+      - name: Insert/Update "BastionSG_out" in vars/output_vars
+        blockinfile:
+          path: vars/output_vars
+          #backup: yes 
+          block: |
+            BastionSGid: {{BastionSG_out.group_id}}

@@ -1,0 +1,10 @@
+nginx_ami: ami-03a933af70fa97ad2
+memcache_ami: ami-03a933af70fa97ad2
+tomcat_ami: ami-03a933af70fa97ad2
+mysql_ami: ami-03a933af70fa97ad2
+rmq_ami: ami-03a933af70fa97ad2
+
+region: "ap-south-1"
+
+webapplb-sg: webapplb_sg
+webappsg: webapp_sg

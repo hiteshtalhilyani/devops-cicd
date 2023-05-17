@@ -1,0 +1,18 @@
+# Author : Hitesh Talhilyani
+- name: webapp stack setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Import VPC Variable File
+      include_vars:  vars/output_vars
+
+    - name: Import EC2 Variable File
+      include_vars:  vars/webappstack
+
+    - name: Create Webapp EC2 Key
+      ec2_key:
+              name: webappec2_keypair
+              region: "{{region}}"
+      register: webappkey_out
+
