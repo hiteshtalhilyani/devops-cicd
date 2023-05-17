@@ -33,3 +33,7 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+**/aws-stack-iaac/webappkey
+**/terraform-basics/webappkey
+**/terraform-basics/webappkey.pub
+**/*.pub

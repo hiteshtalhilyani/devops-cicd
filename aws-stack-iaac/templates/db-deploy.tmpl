@@ -1,0 +1,5 @@
+sudo apt update
+sudo apt install git mysql-client -y 
+git clone https://github.com/hiteshtalhilyani/Java-WebApp-Local-Setup.git
+mysql -h ${rds-endpoint} -u ${dbuser} --password=${dbpass} accounts --ssl-mode=DISABLED < /home/ubuntu/Java-WebApp-Local-Setup/project-info/src/main/resources/db_backup.sql
+
