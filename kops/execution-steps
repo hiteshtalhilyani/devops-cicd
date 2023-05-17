@@ -1,0 +1,52 @@
+Kops Cluster Setup
+
+1. Create ubuntu ec2 instance
+2. Create S3 bucket
+3. Create public hosted zone and NS entries in domain provider
+4. login to ubuntu host
+    - create ssh key 
+    - sudo apt update && sudo apt install awscli -y 
+    - aws configure 
+    - aws s3 ls  ## Test configuration using this command
+    - install kubectl 
+    - sudo cp kubectl /usr/local/bin
+    - kubectl version
+    - https://kubernetes.io/docs/setup/production-environment/tools/kops/
+        -  chmod +x kops-linux-amd64
+        -  sudo mv kops-linux-amd64 /usr/local/bin/kops
+        -  kops --help 
+    - verify the domain 
+        - kops create cluster --name=kubevpro.hiteshtalhilyani.tech \
+        --state=s3://webapp-kops-state --zones=ap-south-1a,ap-south-1b \
+        --node-count=2 --node-size=t3.small --master-size=t3.medium --dns-zone=kubevpro.hiteshtalhilyani.tech \
+        --node-volume-size=8 --master-volume-size=8 
+
+
+    # The above command will store the information in S3 bucket 
+    Cluster configuration has been created,below will be the output.
+
+            Suggestions:
+            * list clusters with: kops get cluster
+            * edit this cluster with: kops edit cluster kubevpro.hiteshtalhilyani.tech
+            * edit your node instance group: kops edit ig --name=kubevpro.hiteshtalhilyani.tech nodes-ap-south-1a
+            * edit your control-plane instance group: kops edit ig --name=kubevpro.hiteshtalhilyani.tech control-plane-ap-south-1a
+
+    # Create KOPS cluster and everytime we need to specify the bucket 
+        -  kops update cluster --name kubevpro.hiteshtalhilyani.tech --state=s3://webapp-kops-state --yes --admin 
+        -  kops validate cluster --state=s3://webapp-kops-state
+        -  kubectl get nodes --show-labels
+        -  kops delete cluster --name=kubevpro.hiteshtalhilyani.tech --state=s3://webapp-kops-state --yes
+        -  sudo  power off  ## it will poweroff the ubuntu-instance 
+
+    # It will delete following resources
+        - Newly created VPC
+        - AutoScaling Launch Configurations
+        - Route53 enteries 
+        - Security Groups 
+        - volumes 
+        - subnets 
+        - iam etc 
+
+                dhcp-options:dopt-05bf1246bd8bb793b     ok
+                eleted kubectl config for kubevpro.hiteshtalhilyani.tech    
+                Deleted cluster: "kubevpro.hiteshtalhilyani.tech"

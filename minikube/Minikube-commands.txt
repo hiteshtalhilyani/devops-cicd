@@ -1,0 +1,43 @@
+# Let's Start 
+1. Minikube 
+    - Clone the repository, checkout branch kubernetes-setup
+        git checkout kubernetes-setup
+        cd minikube 
+        Install chocolatey (depenedencey oracle virtual box)
+        open powershell 
+
+
+## Dependency => Oracle VM Virtualbox
+##To Setup Chocolaty
+##Open powershell as administrator and execute below command 
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+## If getting Error, Turn Off Your Anti Virus for a moment and try again.
+
+
+## Install Minikube with chocolaty
+## Close powershell and start again with admin
+
+choco install minikube kubernetes-cli -y   #oracle virtual box or Docker Desktop should be available
+
+
+##Execute to Setup Minikube cluster
+   -  minikube start --driver=docker
+   -  minikube start --vm-driver=virtualbox
+
+# Verify installation
+   - kubectl get no      
+   -  .kube directory available under c:\users\<username>
+# To view dashboard
+    - minikube dashboard
+
+# Run Test deployment 
+
+   - kubectl create deployment hello-node --image=registry.k8s.io/e2e-test-images/agnhost:2.39 -- /agnhost netexec --http-port=8080
+   - kubectl get deployments
+
+# Clean up
+   - kubectl delete svc <svc-name>
+   - kubectl delete deploy <deployment-name>
+   - minikube stop 
+   - minikube delete 
+
