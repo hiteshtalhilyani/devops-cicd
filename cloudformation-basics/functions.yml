@@ -1,0 +1,12 @@
+#Author : Hitesh Talhilyani
+---
+Resources:
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      AvailabilityZone: ap-south-1a
+      ImageId: ami-025b4b7b37b743227
+      InstanceType: t2.micro
+      Tags:
+        - Key: "Name"
+          Value: !Join ["-", [my, first, inst, cloudformation]]

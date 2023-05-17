@@ -1,0 +1,50 @@
+#Author : Hitesh Talhilyani
+
+Mappings: 
+  AMIRegionMap: 
+    us-east-1:
+      AMI1: ami-0ff8a91507f77f867
+      AMI2: ami-0a584ac55a7631c0c
+    us-west-1:
+      AMI1: ami-0bdb828fd58c52235
+      AMI2: ami-066ee5fd4a9ef77f1
+    eu-west-1:
+      AMI1: ami-047bb4163c506cd98
+      AMI2: ami-0a7c483d527806435
+    ap-northeast-1:
+      AMI1: ami-06cd52961ce9f0d85
+      AMI2: ami-053cdd503598e4a9d
+    ap-south-1:
+      AMI1: ami-025b4b7b37b743227       # Only this one is correct existing AMI, others need to update
+      AMI2: ami-0be9df32ae9f92309
+
+Resources:
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      AvailabilityZone: ap-south-1a
+      ImageId: !FindInMap [AMIRegionMap, !Ref "AWS::Region", AMI1]
+      InstanceType: t2.micro
+      Tags:
+        - Key: "Name"
+          Value: !Join ["-", [my, first, inst, cloudformation]]
+      SecurityGroups:
+        - !Ref cfsg
+
+  cfsg:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow ssh & http to client host
+      Tags:
+        - Key: "Name"
+          Value: "cfsg"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
