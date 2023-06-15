@@ -119,9 +119,6 @@ Setup should be done in below mentioned order
         ps -ef |grep -i tomcat
 
 
-
-
-
 5. # CODE BUILD & DEPLOY - Application Deployment 
 
     git clone -b local-setup https://github.com/devopshydclub/vprofile-project.git
