@@ -1,5 +1,5 @@
 #!/bin/bash
-DATABASE_PASS='MySQL123'
+DATABASE_PASS='admin123'
 
 # MEmcache
 yum install epel-release -y
