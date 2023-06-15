@@ -28,20 +28,17 @@ INFO: All the vm’s hostname and /etc/hosts file entries will be automatically 
 PROVISIONING
 Services
 1.	Nginx:
- Web Service
-
+    Web Service
 2.	Tomcat
- 
-Application Server
- 
+    Application Server
 3.	RabbitMQ
-Broker/Queuing Agent
+    Broker/Queuing Agent
 4.	Memcache
-DB Caching
+    DB Caching
 5.	ElasticSearch
-Indexing/Search service
+    Indexing/Search service
 6.	MySQL
-SQL Database
+    SQL Database
 
 Setup should be done in below mentioned order
 1.	MySQL (Database SVC)
@@ -51,104 +48,69 @@ Setup should be done in below mentioned order
 5.	Nginx	(Web SVC)
 
  
-# MYSQL Setup
+# MYSQL Setup Login to the db vm
+1. vagrant ssh db01
+2. cat /etc/hosts
+3. vi /etc/profile 
+    DATABASE_PASS='admin123'
+    source /etc/profile
+4. yum update -y
+5. yum install epel-release -y
+6. yum install git mariadb-server -y
+7. systemctl start mariadb
+8. systemctl enable mariadb
+9. mysql_secure_installation
+    RUN mysql secure installation script.
+    NOTE: Set db root password, I will be using  “******” as password
+    Set root password? [Y/n] Y New password:
+    Re-enter new password:
+    Password updated successfully! Reloading privilege tables..
+    ... Success!
+    By default, a MariaDB installation has an anonymous user, allowing anyone to log into MariaDB without having to have a user account created for
+    them. This is intended only for testing, and to make the installation go a bit smoother. You should remove them before moving into a
+    production environment.
+    Remove anonymous users? [Y/n] Y
+    ... Success!
+    Normally, root should only be allowed to connect from 'localhost'. This ensures that someone cannot guess at the root password from the network.
+    Disallow root login remotely? [Y/n] n
+    ... skipping.
+    By default, MariaDB comes with a database named 'test' that anyone can access. This is also intended only for testing, and should be removed
+    before moving into a production environment.
+    Remove test database and access to it? [Y/n] Y
+    -	Dropping test database...
+    ... Success!
+    -	Removing privileges on test database...
+    ... Success!
+    Reloading the privilege tables will ensure that all changes made so far will take effect immediately.
+    Reload privilege tables now? [Y/n] Y
+    ... Success!
 
-Login to the db vm
-$ vagrant ssh db01
-
-Verify Hosts entry, if entries missing update the it with IP and hostnames
-# cat /etc/hosts
-
-# vi /etc/profile 
-DATABASE_PASS='admin123'
-source /etc/profile
-
-Update OS with latest patches
-# yum update -y
-
-Set Repository
-# yum install epel-release -y
-
-Install Maria DB Package
-# yum install git mariadb-server -y
-
-Starting & enabling mariadb-server
-# systemctl start mariadb
-# systemctl enable mariadb
-
-RUN mysql secure installation script.
-# mysql_secure_installation
-NOTE: Set db root password, I will be using  “admin123” as password
-
-Set root password? [Y/n] Y New password:
-Re-enter new password:
-Password updated successfully! Reloading privilege tables..
-... Success!
-
-By default, a MariaDB installation has an anonymous user, allowing anyone to log into MariaDB without having to have a user account created for
-them. This is intended only for testing, and to make the installation go a bit smoother. You should remove them before moving into a
-production environment.
-
-Remove anonymous users? [Y/n] Y
-... Success!
-
-Normally, root should only be allowed to connect from 'localhost'. This ensures that someone cannot guess at the root password from the network.
- 
-Disallow root login remotely? [Y/n] n
-... skipping.
-
-By default, MariaDB comes with a database named 'test' that anyone can access. This is also intended only for testing, and should be removed
-before moving into a production environment.
-
-Remove test database and access to it? [Y/n] Y
--	Dropping test database...
-... Success!
--	Removing privileges on test database...
-... Success!
-
-Reloading the privilege tables will ensure that all changes made so far will take effect immediately.
-
-Reload privilege tables now? [Y/n] Y
-... Success!
-
-# mysql -u root -p
-exit 
-
-Set DB name and users.
-# mysql -u root -p"$DATABASE_PASS" -e  "create database accounts"
-# mysql -u root -p"$DATABASE_PASS" -e "grant all privileges on accounts.* TO 'admin'@'app01' identified by 'admin123' "
+10. mysql -u root -p
+    exit 
+11. mysql -u root -p"$DATABASE_PASS" -e  "create database accounts"
+12. mysql -u root -p"$DATABASE_PASS" -e "grant all privileges on accounts.* TO 'admin'@'app01' identified by '******' "
 
 OR 
 
-mysql> grant all privileges on accounts.* TO 'admin'@’%’ identified by 'MySQL123' ; mysql> FLUSH PRIVILEGES;
+mysql> grant all privileges on accounts.* TO 'admin'@’%’ identified by '********' ; mysql> FLUSH PRIVILEGES;
 mysql> exit;
 
 Download Source code & Initialize Database.
-# git clone https://github.com/hiteshtalhilyani/Java-WebApp-Local-Setup.git
-# cd Java-WebApp-Local-Setup\project-info\src\main\resources
-cd /root/Java-WebApp-Local-Setup/project-info/src/main/resources
-cp db_backup.sql /root
-cd /root
-1.  mysql -u root -p"$DATABASE_PASS" accounts < db_backup.sql   
-2.  mysql -u root -p"$DATABASE_PASS" -e "FLUSH PRIVILEGES"
-3.  mysql -u root - padmin123 
-4.  show databases;  
-5.  use accounts;
-6.  show tables;    # mysql> show tables;
-
-
-Restart mariadb-server
-# systemctl restart mariadb
+13. git clone https://github.com/hiteshtalhilyani/Java-WebApp-Local-Setup.git
+14. cd Java-WebApp-Local-Setup\project-info\src\main\resources
+15. cd /root/Java-WebApp-Local-Setup/project-info/src/main/resources
+16. cp db_backup.sql /root
+17. cd /root
+18. mysql -u root -p"$DATABASE_PASS" accounts < db_backup.sql   
+19. mysql -u root -p"$DATABASE_PASS" -e "FLUSH PRIVILEGES"
+20. mysql -u root - padmin123 
+21. show databases;  
+22. use accounts;
+23. show tables;    # mysql> show tables;
+24. systemctl restart mariadb
 
 -> Required Only if Firewall is configured on  Laptop 
 
-Starting the firewall and allowing the mariadb to access from port no. 3306
-# systemctl start firewalld
-# systemctl enable firewalld
-# firewall-cmd --get-active-zones
-# firewall-cmd --zone=public --add-port=3306/tcp --permanent # firewall-cmd --reload
-# systemctl restart mariadb
- 
 
 # MEMCACHE SETUP   - Install, start & enable memcache on port 11211
 1. vagrant ssh mc01
@@ -161,9 +123,7 @@ Starting the firewall and allowing the mariadb to access from port no. 3306
 8. memcached -p 11211 -U 11111 -u memcached -d
 9. ss -tunlp |grep -i 11211
 
- 
 # RABBITMQ SETUP
-
 Login to the RabbitMQ vm
 1. vagrant ssh rmq01
 2. cat /etc/hosts
