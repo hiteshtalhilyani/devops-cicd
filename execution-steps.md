@@ -4,7 +4,7 @@
 4. Login to DB Instance with user "centos" and ppk format key-pair 
 5. Check script after login into instance at  "cat /var/lib/cloud/instance/user-data.txt" or curl http://169.254.169.254/latest/user-data
 6. verify DB service - systemctl status mariadb 
-7. login to DB - mysql -u root -pMySQL123
+7. login to DB - mysql -u root -padmin123
 8.  show databases;
     use accounts;
     show tables;
@@ -56,7 +56,7 @@
         rmq01.webapp.in
     
     - Modify the SQL password if different. 
-        jdbc.password=MySQL123
+        jdbc.password=admin123
 
 3. Change path to - "project-code" where pom.xml file exist and to generate the artifacts.
        
@@ -106,7 +106,7 @@
         -  systemctl stop  tomcat9.service
         -  cd /var/lib/tomcat9/webapps
         -  rm -rf ROOT
-        -  cp -pr /tmp/vprofile-v2.war /var/lib/tomcat9/webapps/ROOT.war
+        -  cp -pr /tmp/webapp-v2.war /var/lib/tomcat9/webapps/ROOT.war
         -  systemctl start tomcat9.service
         -  It will extract the ROOT.war to ROOT directory in the same path 
         -  cat /var/lib/tomcat9/webapps/ROOT/WEB-INF/classes/application.properties
