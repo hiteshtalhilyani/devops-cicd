@@ -16,7 +16,7 @@
 
 # Jenkins Setup 
     - create ec2 instance - ubuntu-20.4 (t2.small)
-    - Run userdata.sh scrip 
+    - Run userdata.sh script 
     - Manage Jenkins -> Global Tool Configuration
         - Add JDK 
             Name: OpenJDK8   #  Remember this name
